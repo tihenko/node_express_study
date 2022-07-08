@@ -1,8 +1,23 @@
-const { createUser } = require('./services/user.service');
-require('./services/file.service');
+const fs = require('fs/promises');
+const path = require('path');
 
-const user = createUser('Alindos', 27);
+const sortFolder = async (read, gender, write) => {
+  const files = await fs.readdir(path.join(__dirname, read));
 
-console.log(user);
+  for (const file of files) {
+    const redFolderPath = path.join(__dirname, read, file)
+    const data = await fs.readFile(redFolderPath);
 
-user.sayHello();
+      const user = JSON.parse(data.toString());
+
+      if (user.gender === gender) {
+        await fs.rename(redFolderPath, path.join(__dirname, write, file));
+
+
+      }
+    }
+
+}
+
+sortFolder('girls', 'male', 'boys');
+sortFolder('boys', 'female', 'girls');
