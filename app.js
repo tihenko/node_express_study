@@ -1,23 +1,30 @@
-const fs = require('fs/promises');
-const path = require('path');
+const express = require('express');
+const users = require('./dataBase/users');
+const app = express();
 
-const sortFolder = async (read, gender, write) => {
-  const files = await fs.readdir(path.join(__dirname, read));
+app.get('/', (req,res) => {
+  console.log(req);
 
-  for (const file of files) {
-    const redFolderPath = path.join(__dirname, read, file)
-    const data = await fs.readFile(redFolderPath);
+  res.json('Hello Express');
+});
 
-      const user = JSON.parse(data.toString());
+app.get('/users', (req,res) => {
+  res.json(users);
+});
 
-      if (user.gender === gender) {
-        await fs.rename(redFolderPath, path.join(__dirname, write, file));
+app.get('/users/:userId', (req,res) => {
+  const userIndex = +req.params.userId;
+  if (userIndex < 0) {
+    res.status(400).json('Please enter valid ID');
+    return;
+  }
+  console.log('_____________________________');
+  console.log(userIndex);
+  console.log('_____________________________');
+  console.log('Customer want to get user with ID 1');
 
-
-      }
-    }
-
-}
-
-sortFolder('girls', 'male', 'boys');
-sortFolder('boys', 'female', 'girls');
+  res.json(users[1]);
+});
+app.listen(5000, () => {
+  console.log('Server listen 5000')
+});
