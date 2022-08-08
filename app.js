@@ -14,16 +14,19 @@ app.get('/users', (req,res) => {
 
 app.get('/users/:userId', (req,res) => {
   const userIndex = +req.params.userId;
+
   if (userIndex < 0) {
     res.status(400).json('Please enter valid ID');
     return;
   }
-  console.log('_____________________________');
-  console.log(userIndex);
-  console.log('_____________________________');
-  console.log('Customer want to get user with ID 1');
+ const user = users[userIndex];
 
-  res.json(users[1]);
+  if (!user) {
+    res.status(404).json(`Use with ID ${userIndex} is not found`);
+    return;
+  }
+
+  res.json(user);
 });
 app.listen(5000, () => {
   console.log('Server listen 5000')
